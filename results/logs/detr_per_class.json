@@ -1,0 +1,30 @@
+{
+  "Glioma_Tumor": {
+    "AP": 0.1437,
+    "precision": 0.2683,
+    "recall": 0.2292,
+    "f1": 0.2472,
+    "n_gt": 48
+  },
+  "Meningioma_Tumor": {
+    "AP": 0.5199,
+    "precision": 0.459,
+    "recall": 0.6512,
+    "f1": 0.5385,
+    "n_gt": 43
+  },
+  "No_Tumor": {
+    "AP": 0.3262,
+    "precision": 0.1818,
+    "recall": 0.8,
+    "f1": 0.2963,
+    "n_gt": 10
+  },
+  "Pituitary_Tumor": {
+    "AP": 0.3203,
+    "precision": 0.338,
+    "recall": 0.5,
+    "f1": 0.4034,
+    "n_gt": 48
+  }
+}

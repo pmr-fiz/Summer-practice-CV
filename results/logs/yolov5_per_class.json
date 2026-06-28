@@ -1,0 +1,14 @@
+{
+  "Glioma_Tumor": {
+    "AP": 0.3746
+  },
+  "Meningioma_Tumor": {
+    "AP": 0.7342
+  },
+  "No_Tumor": {
+    "AP": 0.59
+  },
+  "Pituitary_Tumor": {
+    "AP": 0.581
+  }
+}

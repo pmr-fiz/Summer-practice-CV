@@ -1,0 +1,93 @@
+# =====================================================================
+# Конфигурация проекта: детектирование опухолей головного мозга на МРТ
+# =====================================================================
+
+project:
+  name: brain_tumor_detection
+  seed: 42                       # глобальный seed для воспроизводимости
+
+# ---------------------------------------------------------------------
+# Данные. Структура после prepare_data.py:
+#   data/processed/
+#     ├── data.yaml              # YOLO-конфиг (path, train, val, test, names)
+#     ├── train/{images,labels}
+#     ├── val/{images,labels}
+#     └── test/{images,labels}
+# ---------------------------------------------------------------------
+data:
+  processed_dir: data/processed
+  yaml: data/processed/data.yaml
+  # 4 класса (Brain_Tumor_Detect, Roboflow). Порядок — алфавитный, как в data.yaml
+  # после prepare_data.py. Если в вашем экспорте классы иные — поправьте здесь.
+  class_names: [Glioma_Tumor, Meningioma_Tumor, No_Tumor, Pituitary_Tumor]
+  num_classes: 4
+
+# ---------------------------------------------------------------------
+# Общие настройки обучения (могут переопределяться на уровне модели)
+# ---------------------------------------------------------------------
+train:
+  epochs: 50
+  early_stop_patience: 10        # эпох без улучшения mAP@0.5 на val
+  num_workers: 2
+  device: cuda                   # cuda | mps | cpu
+
+# Параметры augmentation для torchvision/DETR/EfficientDet пайплайна
+augment:
+  hflip_p: 0.5
+  scale_jitter: 0.10
+  brightness_contrast: 0.20
+  translate: 0.05
+
+# Нормализация (ImageNet)
+normalize:
+  mean: [0.485, 0.456, 0.406]
+  std:  [0.229, 0.224, 0.225]
+
+# ---------------------------------------------------------------------
+# Гиперпараметры по моделям
+# ---------------------------------------------------------------------
+models:
+  yolov8:
+    weights: yolov8n.pt
+    img_size: 640
+    batch: 16
+    lr0: 0.01
+    optimizer: SGD
+  yolov5:
+    weights: yolov5su.pt         # YOLOv5s в формате ultralytics
+    img_size: 640
+    batch: 16
+    lr0: 0.01
+    optimizer: SGD
+  faster_rcnn:
+    img_size: 640
+    batch: 4
+    lr: 0.005
+    optimizer: SGD
+    step_size: 15
+    gamma: 0.1
+  ssd:
+    img_size: 320
+    batch: 8
+    lr: 0.01
+    optimizer: SGD
+  efficientdet:
+    variant: tf_efficientdet_d0
+    img_size: 512
+    batch: 8
+    lr: 0.0001
+    optimizer: AdamW
+  detr:
+    weights: facebook/detr-resnet-50
+    img_size: 800
+    batch: 4
+    lr: 0.0001
+    optimizer: AdamW
+
+# ---------------------------------------------------------------------
+# Оценка
+# ---------------------------------------------------------------------
+eval:
+  iou_thr: 0.5                   # порог для mAP@0.5 / P / R / F1
+  score_thr: 0.05                # минимальный confidence для предсказания
+  results_csv: results/logs/metrics.csv
